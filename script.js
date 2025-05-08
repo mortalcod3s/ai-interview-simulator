@@ -7,6 +7,8 @@ const statusText = document.getElementById("status");
 const transcriptTextarea = document.getElementById("transcript");
 
 console.log("Prompt input : ", promptInput.value);
+let questionObject={}
+let isQuestionReady=false;
 
 // Event listener for button click
 submitButton.addEventListener("click", function (e) {
@@ -28,7 +30,20 @@ submitButton.addEventListener("click", function (e) {
       .then((data) => {
         // If response contains the message, display it
         if (data.response) {
-          responseDiv.innerHTML = `<p>${data.response}</p>`; // Display the response in a div
+          questionObject=data.response;
+          isQuestionReady=true;
+          // document.getElementById("questionText").innerHTML=data.response["question1"];
+          // responseDiv.innerHTML = `<p>${data.response}</p>`; // Display the response in a div
+         if(isQuestionReady){
+          responseDiv.innerHTML=`<div>
+          <p>Question is ready Please click on start button to ask questions</p>
+          <button id="startButton" onclick="askQuestion()">Start</button>
+          </div>`
+         }else{
+          responseDiv.innerHTML=`<div>
+         <p>Please enter a prompt</p>
+          </div>`
+         }
         } else {
           responseDiv.innerHTML = "<p>No response from API.</p>"; // In case response is empty
         }
@@ -55,7 +70,7 @@ voiceButton.addEventListener("click", function () {
 
   recognition.onresult = function (event) {
     const voiceInput = event.results[0][0].transcript;
-    transcriptTextarea.value = voiceInput; // Set the speech input to the textarea
+    promptInput.value = voiceInput; // Set the speech input to the textarea
     console.log("Voice Input: " + voiceInput);
     statusText.textContent = "Speech recognized."; // Update status after recognition
   };
@@ -69,3 +84,31 @@ voiceButton.addEventListener("click", function () {
     statusText.textContent = "Click to start speaking..."; // Reset status when recognition ends
   };
 });
+
+async function askQuestion() {
+  const questions = Object.values(questionObject);
+
+  for (let i = 0; i < questions.length; i++) {
+    console.log(questions[i]);
+    document.getElementById("questionText").innerHTML = questions[i];
+
+    // Wait for user response or a button click
+    await waitForUserResponse();
+  }
+  console.log("All questions asked!");
+}
+// Helper function to wait for user input (e.g., button click)
+function waitForUserResponse() {
+  return new Promise((resolve) => {
+    document.getElementById("submitAnswer").onclick = () => {
+      console.log("User answered:", document.getElementById("answerInput").value);
+      document.getElementById("answerInput").value="";
+      resolve();
+    };
+    document.getElementById("dontKnow").onclick = () => {
+      console.log("User clicked Don't Know");
+      document.getElementById("answerInput").value="";
+      resolve();
+    };
+  });
+}

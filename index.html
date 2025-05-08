@@ -75,10 +75,44 @@
     <p id="status">Click to start speaking...</p>
   </div>
 
-  <textarea id="transcript" placeholder="Your answer will appear here..."></textarea>
+  <!-- <textarea id="transcript" placeholder="Your answer will appear here..."></textarea> -->
 
-  <div id="responseDiv"></div>
+  <div id="responseDiv">Please enter a prompt</div>
+<!-- Modal Structure -->
+<div id="questionModal" class="modal">
+  <div class="modal-content">
+      <h2 id="questionText"></h2>
+      <input type="text" id="answerInput" placeholder="Type your answer..." />
+      <div class="button-container">
+          <button id="submitAnswer" onclick="askQuestion()">Submit Answer</button>
+          <button id="dontKnow">Don't Know</button>
+      </div>
+  </div>
+</div>
 
-  <script src="script.js"></script> <!-- Include the JS file -->
+
+  <button id="downloadPdfBtn">Download as PDF</button>
+
+  <script src="script.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+      const responseText = document.getElementById('responseDiv').innerText.trim();
+
+      if (!responseText) {
+        alert('No response to download!');
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // Split text to fit within 180 units (about the width of the page minus margins)
+      const lines = doc.splitTextToSize(responseText, 180);
+
+      doc.text(lines, 10, 20);
+      doc.save('response.pdf');
+    });
+  </script>
 </body>
 </html>
