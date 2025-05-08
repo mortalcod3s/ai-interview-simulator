@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./styles.css">
   <title>AI Interview Simulator</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -12,7 +13,7 @@
       margin: 0;
       padding: 20px;
     }
-    #responseDiv {
+    #responseDiv, #transcript {
       margin-top: 20px;
       padding: 10px;
       background-color: #f4f4f4;
@@ -23,20 +24,58 @@
       margin-right: auto;
       word-wrap: break-word;
     }
+    .voice-controls {
+      margin-top: 15px;
+    }
+    #recordButton {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #recordButton:hover {
+      background-color: #45a049;
+    }
+    #status {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+    #transcript {
+      width: 90%;
+      height: 100px;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      resize: none;
+      font-size: 14px;
+    }
   </style>
+  
 </head>
 <body>
   <h1>AI Interview Simulator</h1>
   
   <form id="form_id">
     <div>
-      <label for="promptInput">Enter your prompt: </label>
+      <label for="promptInput">Enter your question: </label>
       <input type="text" id="promptInput" placeholder="e.g. Tell me a joke!" />
     </div>
     <div>
       <button id="submitButton">Submit</button>
     </div>
   </form>
+
+  <div class="voice-controls">
+    <button id="recordButton">🎙️ Start Recording</button>
+    <p id="status">Click to start speaking...</p>
+  </div>
+
+  <textarea id="transcript" placeholder="Your answer will appear here..."></textarea>
 
   <div id="responseDiv"></div>
 
