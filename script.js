@@ -16,6 +16,7 @@ let isQuestionReady=false;
 
 // Event listener for button click
 submitButton.addEventListener("click", function (e) {
+  document.getElementById('responseDiv').innerText="Loading...";
   e.preventDefault();
   const prompt = promptInput.value.trim(); // Get the value of the prompt input
 
@@ -101,8 +102,9 @@ async function askQuestion() {
     await waitForUserResponse(questions[i]);
   }
   console.log("All questions asked!");
-  document.getElementById('responseDiv').innerText=feedback;
+  document.getElementById('responseDiv').innerText=formatFeedback(feedback);
   console.log(feedback);
+  modal.style.display = "none";
 }
 // Helper function to wait for user input (e.g., button click)
 function waitForUserResponse(question) {
@@ -127,5 +129,25 @@ function addFeedback(question, answer) {
   feedback[`question${index}`] = question;
   feedback[`answer${index}`] = answer;
 }
+function formatFeedback(feedbackObject) {
+  let formattedText = ""; // Initialize an empty string
+
+  // Loop through the object and format each pair
+  Object.keys(feedbackObject).forEach((key, index) => {
+    if (key.startsWith("question")) {
+      const questionNumber = key.replace(/[^\d]/g, ""); // Extract the number
+      const answerKey = `answer${questionNumber}`;
+
+      // Append to the formatted string
+      formattedText += `Question ${questionNumber}: ${feedbackObject[key]}\n`;
+      if (feedbackObject[answerKey]) {
+        formattedText += `Answer ${questionNumber}: ${feedbackObject[answerKey]}\n\n`;
+      }
+    }
+  });
+
+  return formattedText.trim(); // Return the formatted string
+}
+
 
 

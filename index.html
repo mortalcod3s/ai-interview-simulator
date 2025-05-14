@@ -208,6 +208,31 @@
     h1 {
       color: inherit;
     }
+
+    .modal-content {
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 0px;
+      right: 14px;
+      background: none;
+      border: none;
+      font-size: 2rem;
+      color: #bbb;
+      cursor: pointer;
+      z-index: 10;
+      transition: color 0.2s;
+      padding: 4px 8px;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
   </style>
   
 </head>
@@ -232,9 +257,9 @@
 <!-- Modal Structure -->
 <div id="questionModal" class="modal">
   <div class="modal-content">
+      <button class="modal-close" id="closeModalBtn" title="Close">&times;</button>
       <h2 id="questionText"></h2>
-      <!-- <input type="text" id="answerInput" placeholder="Type your answer..." /> -->
-    <textarea id="answerInput" placeholder="Type your answer..."></textarea>
+      <textarea id="answerInput" placeholder="Type your answer..."></textarea>
       <div class="button-container">
           <button id="submitAnswer" onclick="askQuestion()">Submit Answer</button>
           <button id="dontKnow">Don't Know</button>
@@ -248,23 +273,48 @@
   <script src="script.js"></script> 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    document.getElementById('downloadPdfBtn').addEventListener('click', function() {
-      const responseText = document.getElementById('responseDiv').innerText.trim();
+   document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+  // Get the reference to the div
+  const responseDiv = document.getElementById('responseDiv');
 
-      if (!responseText) {
-        alert('No response to download!');
-        return;
-      }
+  // Try to parse it as an object first
+  let responseText = "";
 
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
+  if (typeof responseDiv.dataset.response !== "undefined") {
+    // If it's stored as a data attribute, parse it
+    responseText = JSON.stringify(JSON.parse(responseDiv.dataset.response), null, 2);
+  } else {
+    // Fallback to innerText
+    responseText = responseDiv.innerText.trim();
+  }
 
-      // Split text to fit within 180 units (about the width of the page minus margins)
-      const lines = doc.splitTextToSize(responseText, 180);
+  // If it's still empty, alert the user
+  if (!responseText) {
+    alert('No response to download!');
+    return;
+  }
 
-      doc.text(lines, 10, 20);
-      doc.save('response.pdf');
-    });
+  // Import jsPDF from the global window object
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Title
+  doc.setFontSize(16);
+  doc.text("Interview Response", 10, 10);
+
+  // Format the text to fit within 180 units width
+  const lines = doc.splitTextToSize(responseText, 180);
+
+  // Start writing text from position (10, 20)
+  doc.text(lines, 10, 20);
+
+  // Save the PDF
+  doc.save('response.pdf');
+});
+
+    document.getElementById('closeModalBtn').onclick = function() {
+      document.getElementById('questionModal').style.display = 'none';
+    };
   </script>
 </body>
 </html>
