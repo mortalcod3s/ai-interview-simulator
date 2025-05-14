@@ -4,6 +4,7 @@ const submitButton = document.getElementById("submitButton");
 const responseDiv = document.getElementById("responseDiv");
 const voiceButton = document.getElementById("recordButton");
 const statusText = document.getElementById("status");
+const modal = document.getElementById("questionModal");
 const transcriptTextarea = document.getElementById("transcript");
 
 console.log("Prompt input : ", promptInput.value);
@@ -87,7 +88,8 @@ voiceButton.addEventListener("click", function () {
 
 async function askQuestion() {
   const questions = Object.values(questionObject);
-
+  answerInput.value = ""; // Clear previous answer
+  modal.style.display = "block";
   for (let i = 0; i < questions.length; i++) {
     console.log(questions[i]);
     document.getElementById("questionText").innerHTML = questions[i];
@@ -112,3 +114,4 @@ function waitForUserResponse() {
     };
   });
 }
+
