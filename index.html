@@ -8,15 +8,18 @@
 
   <style>
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
+      background: linear-gradient(to bottom, #000, #181A20);
+      min-height: 100vh;
       margin: 0;
       padding: 20px;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      color: #fff;
     }
     #responseDiv, #transcript {
       margin-top: 20px;
       padding: 10px;
-      background-color: #f4f4f4;
+      background-color: #212428;
       border: 1px solid #ddd;
       border-radius: 5px;
       max-width: 600px;
@@ -54,21 +57,169 @@
       resize: none;
       font-size: 14px;
     }
+    #submitButton, #downloadPdfBtn {
+      background: #5b9cff; /* blue */
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    #submitButton:hover, #downloadPdfBtn:hover {
+      background: #357ae8; /* darker blue on hover */
+      box-shadow: 0 2px 8px rgba(0,0, 0, 0.12);
+    }
+    label[for="promptInput"] {
+      color: #fff;
+    }
+    .message-input-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      padding: 18px 18px 8px 18px;
+      max-width: 600px;
+      margin: 40px auto 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    #promptInput {
+      width: 100%;
+      border: none;
+      resize: none;
+      min-height: 60px;
+      font-size: 1.1rem;
+      color: #e0e0e0;
+      background: #323232;
+      outline: none;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      box-sizing: border-box;
+      padding: 16px;
+    }
+
+    #promptInput::placeholder {
+      color: #bdbdbd;
+      font-size: 1.1rem;
+    }
+
+    .format-toolbar {
+      display: flex;
+      gap: 8px;
+      border-top: 1px solid #eee;
+      padding-top: 8px;
+    }
+
+    .format-toolbar button {
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .format-toolbar button:hover {
+      background: #f0f0f0;
+      color: #222;
+    }
+
+    .prompt-label {
+      display: block;
+      text-align: left;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      margin-left: 2px;
+    }
+
+    h1 {
+      color: #fff;
+    }
+
+    .centered-input {
+      width: 50%;
+      margin: 32px auto 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .centered-input .prompt-label {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      text-align: center;
+      width: 100%;
+    }
+
+    body.dark-mode {
+      background: linear-gradient(to bottom, #000, #181A20);
+      color: #fff;
+    }
+
+    body.light-mode {
+      background: linear-gradient(to bottom, #f5f5f5, #e0e0e0);
+      color: #222;
+    }
+
+    .centered-input,
+    .message-input-card {
+      color: #222;
+    }
+
+    body.dark-mode .centered-input,
+    body.dark-mode .message-input-card {
+      background: #23262F;
+      color: #fff;
+    }
+
+    #promptInput {
+      background: #212428;
+      color: #fff;
+    }
+    #answerInput{
+      background: #212428;
+      color: #fff; 
+    }
+
+    body.dark-mode #promptInput {
+      background: #23262F;
+      color: #fff;
+    }
+
+    .prompt-label {
+      color: #222;
+    }
+
+    body.dark-mode .prompt-label {
+      color: #fff;
+    }
+
+    h1 {
+      color: inherit;
+    }
   </style>
   
 </head>
 <body>
   <h1>AI Interview Simulator</h1>
-  
-  <form id="form_id">
-    <div>
-      <label for="promptInput">Enter your question: </label>
-      <input type="text" id="promptInput" placeholder="e.g. Tell me a joke!" />
-    </div>
-    <div>
-      <button id="submitButton">Submit</button>
-    </div>
-  </form>
+  <div class="centered-input">
+    <label class="prompt-label" for="promptInput">Enter topic</label>
+    <textarea id="promptInput" placeholder="Interview Topic"></textarea>
+  </div>
+  <div>
+    <button id="submitButton">Submit</button>
+  </div>
 
   <div class="voice-controls">
     <button id="recordButton">🎙️ Start Recording</button>
@@ -82,7 +233,8 @@
 <div id="questionModal" class="modal">
   <div class="modal-content">
       <h2 id="questionText"></h2>
-      <input type="text" id="answerInput" placeholder="Type your answer..." />
+      <!-- <input type="text" id="answerInput" placeholder="Type your answer..." /> -->
+    <textarea id="answerInput" placeholder="Type your answer..."></textarea>
       <div class="button-container">
           <button id="submitAnswer" onclick="askQuestion()">Submit Answer</button>
           <button id="dontKnow">Don't Know</button>

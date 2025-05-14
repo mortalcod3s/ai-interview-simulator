@@ -6,6 +6,9 @@ const voiceButton = document.getElementById("recordButton");
 const statusText = document.getElementById("status");
 const modal = document.getElementById("questionModal");
 const transcriptTextarea = document.getElementById("transcript");
+// Initialize the global object
+const feedback = {};
+
 
 console.log("Prompt input : ", promptInput.value);
 let questionObject={}
@@ -95,23 +98,34 @@ async function askQuestion() {
     document.getElementById("questionText").innerHTML = questions[i];
 
     // Wait for user response or a button click
-    await waitForUserResponse();
+    await waitForUserResponse(questions[i]);
   }
   console.log("All questions asked!");
+  document.getElementById('responseDiv').innerText=feedback;
+  console.log(feedback);
 }
 // Helper function to wait for user input (e.g., button click)
-function waitForUserResponse() {
+function waitForUserResponse(question) {
   return new Promise((resolve) => {
     document.getElementById("submitAnswer").onclick = () => {
       console.log("User answered:", document.getElementById("answerInput").value);
+      addFeedback(question, document.getElementById("answerInput").value);
       document.getElementById("answerInput").value="";
       resolve();
     };
     document.getElementById("dontKnow").onclick = () => {
       console.log("User clicked Don't Know");
+      addFeedback(question, "Don't Know");
       document.getElementById("answerInput").value="";
       resolve();
     };
   });
 }
+// Function to add feedback
+function addFeedback(question, answer) {
+  const index = Math.floor(Object.keys(feedback).length / 2) + 1;
+  feedback[`question${index}`] = question;
+  feedback[`answer${index}`] = answer;
+}
+
 
